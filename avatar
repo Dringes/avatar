@@ -1,0 +1,30 @@
+from PIL import Image
+crop_2 = 50
+crop_1 = 25
+image = Image.open("monro.jpg")
+rgb_image = image.convert("RGB")
+red_channel, green_channel, blue_channel = rgb_image.split()
+coordinates_r1 = (crop_1, 0, red_channel.width-crop_1, red_channel.height)
+coordinates_r = (crop_2, 0, red_channel.width, red_channel.height)
+coordinates_b = (0, 0, blue_channel.width-crop_2, blue_channel.height) 
+coordinates_b2 = (crop_1, 0, blue_channel.width-crop_1, blue_channel.height)
+coordinates_g = (crop_1, 0, green_channel.width-crop_1, green_channel.height)
+new_image = Image.merge("RGB", (red_channel, green_channel, blue_channel))
+cropped = red_channel.crop(coordinates_r)
+cropped_r = red_channel.crop(coordinates_r1)
+cropped_r =cropped_r.resize((696, 522))
+cropped = cropped.resize((696, 522))
+mix_red = Image.blend(cropped_r, cropped, 0.5) 
+b_cropped1 = blue_channel.crop(coordinates_b2)
+b_cropped = blue_channel.crop(coordinates_b)
+b_cropped = b_cropped.resize((696, 522))
+b_cropped1 = b_cropped1.resize((696, 522))
+mix_blue = Image.blend(b_cropped, b_cropped1, 0.5)
+g_cropped = green_channel.crop(coordinates_g)
+g_cropped1 = g_cropped.resize((696, 522))
+final_image = Image.merge("RGB", (mix_red, g_cropped1, mix_blue))
+final_image.thumbnail((80, 80))
+final_image.save("final80x80.jpg")
+
+
+
